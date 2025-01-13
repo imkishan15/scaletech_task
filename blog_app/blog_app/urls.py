@@ -1,3 +1,5 @@
+from django.urls import path, include
+
 """
 URL configuration for blog_app project.
 
@@ -20,4 +22,6 @@ from django.urls import path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/users/", include("users.urls")),
+    path("api/", include("blog.urls")),
 ]
