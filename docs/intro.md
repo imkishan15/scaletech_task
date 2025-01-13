@@ -105,7 +105,7 @@ Detailed API documentation is available in the `database_setup.md` file
 
 3. Install dependencies:
    ```bash
-   pip install -r requirements.txt
+   pip install -r requirement.txt
    ```
 
 4. Apply migrations:
