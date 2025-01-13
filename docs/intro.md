@@ -38,11 +38,13 @@ This project is a comprehensive blogging platform designed to provide users with
 
 - **Django**: Web framework for rapid development.
 - **Django Rest Framework (DRF)**: For building RESTful APIs.
-- **SQLite**: Default database for development (can be replaced with PostgreSQL/MySQL in production).
+
+### Database
+**PostgreSQL**: Relational database for storing structured data.
 
 ### Authentication
 
-- **JWT (JSON Web Tokens)**: Secure user authentication.
+**JWT (JSON Web Tokens)**: Secure user authentication.
 
 ### Additional Tools
 
