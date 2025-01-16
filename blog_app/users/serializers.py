@@ -1,6 +1,8 @@
 import base64
 from .models import CustomUser
+from django.contrib.auth import authenticate
 from io import BytesIO
+from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from rest_framework import serializers
 from django.core.exceptions import ValidationError
@@ -67,6 +69,9 @@ class Base64ImageField(serializers.ImageField):
         return super().to_internal_value(data)
 
 
+User = get_user_model()
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     """
     Serializer for user registration.
@@ -81,9 +86,27 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     """
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = ["username", "email", "password"]
-        extra_kwargs = {"password": {"write_only": True}}
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
+
+    def validate_username(self, value):
+        """
+        Check if the username already exists.
+        """
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Username already exists.")
+        return value
+
+    def validate_email(self, value):
+        """
+        Check if the email already exists.
+        """
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Email already exists.")
+        return value
 
     def create(self, validated_data):
         """
@@ -95,8 +118,55 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         Returns:
             CustomUser: The created user instance.
         """
-        user = CustomUser.objects.create_user(**validated_data)
+        user = User.objects.create_user(
+            username=validated_data["username"],
+            email=validated_data["email"],
+            password=validated_data["password"],
+        )
         return user
+
+
+class LoginSerializer(serializers.Serializer):
+    """
+    Serializer for validating user login credentials.
+
+    This serializer validates the email and password provided by the user and authenticates
+    the user. It raises validation errors if:
+    - The email or password is missing.
+    - The email does not exist in the database.
+    - The password is incorrect.
+
+    Fields:
+        - email (str): The email address of the user.
+        - password (str): The password of the user. This field is write-only.
+
+    Methods:
+        validate(data):
+            Validates the email and password.
+            - Checks if the email exists in the database.
+            - Authenticates the user using the provided password.
+            - Adds the authenticated user object to the validated data.
+
+    """
+
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        email = data.get("email")
+        password = data.get("password")
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("This email does not exist.")
+
+        user = authenticate(username=user.username, password=password)
+        if user is None:
+            raise serializers.ValidationError("Invalid password.")
+
+        data["user"] = user
+        return data
 
 
 class UserProfileSerializer(serializers.ModelSerializer):

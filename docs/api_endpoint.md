@@ -13,8 +13,8 @@
 ```json
 {
     "username": "string",
-    "password": "string",
-    "email": "string"
+    "email": "string",
+    "password": "string"
 }
 ```
 
@@ -23,12 +23,12 @@
 ### Login
 **URL:** `/login/`  
 **Method:** `POST`  
-**View:** `TokenObtainPairView`  
+**View:** `LoginView`  
 **Description:** Obtain an access and refresh token.  
 **Request Body:**
 ```json
 {
-    "username": "string",
+    "email": "string",
     "password": "string"
 }
 ```

@@ -2,21 +2,30 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import get_user_model
+from .serializers import LoginSerializer
 from .serializers import UserRegistrationSerializer, UserProfileSerializer
 
+User = get_user_model()
 
-class RegisterUserView(APIView):
+
+class UserRegistrationView(APIView):
     """
-    API view for user registration.
+    View for registering new users.
+
+    This view allows new users to create an account by providing the required details,
+    such as email, username, and password. Upon successful registration, the user
+    is saved to the database, and a success response is returned.
 
     Methods:
-        post: Handles the registration of a new user. Validates the input data
-              and creates a new user if valid.
-
-    Request Body:
-        - username: (str) The desired username for the user.
-        - email: (str) The email address of the user.
-        - password: (str) The password for the user.
+        post(request, *args, **kwargs):
+            Handles the POST request to register a new user.
+            - Validates the provided data using the UserRegistrationSerializer.
+            - Creates a new user if the data is valid.
+            - Returns a success response or validation errors.
     """
 
     def post(self, request):
@@ -24,8 +33,40 @@ class RegisterUserView(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(
-                {"message": "User registered successfully"},
+                {"message": "User registered successfully."},
                 status=status.HTTP_201_CREATED,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginView(APIView):
+    """
+    Custom login view for authenticating users using email and password.
+
+    This view allows users to log in by providing their email and password. Upon successful
+    authentication, it returns a pair of JWT tokens (access and refresh) for the user.
+
+    Methods:
+        post(request, *args, **kwargs):
+            Handles the POST request to authenticate a user.
+            - Validates the email and password.
+            - Returns JWT tokens if the credentials are valid.
+            - Returns an error response if the credentials are invalid.
+    """
+
+    def post(self, request, *args, **kwargs):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.validated_data["user"]
+
+            # Generate tokens
+            refresh = RefreshToken.for_user(user)
+            return Response(
+                {
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                },
+                status=status.HTTP_200_OK,
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

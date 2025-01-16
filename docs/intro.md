@@ -25,12 +25,18 @@ This project is a comprehensive blogging platform designed to provide users with
 - **Add Comments**: Users can add comments to blogs.
 - **Nested Comments**: Supports replies to comments, creating a thread-like structure.
 - **Vote on Comments**: Users can upvote or downvote comments.
-- **Delete Comments**: Users can delete their own comments.
+- **Delete Comments**: Users and superusers can delete their own comments.
 
 ### 4. **Caching and Pagination**
 
 - **Caching**: Blog listing endpoints are optimized using caching to improve performance.
 - **Pagination**: Blogs and comments are paginated to ensure efficient data retrieval.
+
+### 5. **Logging Functionality**
+
+- **Log Request Data:** Logs all incoming request data, including HTTP methods, endpoints, headers, and request bodies.
+- **File Storage:** Automatically saves logs to a file named `requests.log` in the `logs` directory within the project's root directory.
+- **Debugging and Auditing:** Useful for debugging and auditing purposes.
 
 ## Technology Stack
 
@@ -105,18 +111,27 @@ Detailed API documentation is available in the `database_setup.md` file
    venv\Scripts\activate
    ```
 
-3. Install dependencies:
+4. Install dependencies:
    ```bash
    pip install -r requirement.txt
    ```
 
-4. Apply migrations:
+5. Create superuser: A superuser in Django has full administrative privileges, including the ability to delete any blog or comment in the system.
+
+   ```bash
+   python manage.py createsuperuser
+   ```
+   
+
+6. Apply migrations:
    ```bash
    cd ./blog_app
    python manage.py makemigrations
+   python manage.py makemigrations blog
+   python manage.py makemigrations comment
    python manage.py migrate
    ```
-5. Run the development server:
+7. Run the development server:
    ```bash
    python manage.py runserver
    ```
