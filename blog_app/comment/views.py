@@ -125,7 +125,7 @@ class CommentVoteView(APIView):
 class CommentDeleteView(APIView):
     """
     View to delete a comment.
-    Only the author of the comment can delete it.
+    Only the author of the comment or superuser can delete it.
     """
 
     permission_classes = [permissions.IsAuthenticated]

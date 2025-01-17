@@ -94,8 +94,8 @@ Detailed API documentation is available in the `database_setup.md` file
 
 1. Clone the repository:
    ```bash
-   git clone <repository_url>
-   cd <project_directory>
+   git clone https://github.com/imkishan15/scaletech_task.git
+   cd scaletech_task
    ```
 2. Create a virtual environment 
    ```bash

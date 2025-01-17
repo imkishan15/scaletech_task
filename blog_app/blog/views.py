@@ -227,7 +227,7 @@ class BlogVoteView(APIView):
 class BlogDeleteView(APIView):
     """
     View to delete a blog post.
-    Only the author of the blog can delete the blog.
+    Only the author of the blog or superuser can delete the blog.
     """
 
     permission_classes = [permissions.IsAuthenticated]

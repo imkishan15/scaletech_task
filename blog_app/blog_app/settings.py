@@ -56,8 +56,8 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": True,
     "ALGORITHM": "HS256",
-    "SIGNING_KEY": SECRET_KEY,  # Use your Django secret key
-    "AUTH_HEADER_TYPES": ("Bearer",),  # Default: Bearer token
+    "SIGNING_KEY": SECRET_KEY,
+    "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
 REST_FRAMEWORK = {

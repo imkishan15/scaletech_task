@@ -139,7 +139,7 @@ class BlogSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         """
-        Updates an existing blog with new data, preserving tags.
+        Updates an existing blog with new data.
 
         Args:
             instance: The existing blog instance to update.
